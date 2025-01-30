@@ -10,7 +10,6 @@ import signal
 import tempfile
 import sys
 from datetime import datetime, date, timedelta, time as dt_time
-from supabase import create_client, Client
 import pytz
 import yfinance as yf
 import pandas as pd
