@@ -59,7 +59,7 @@ def check_authentication():
         
         st.stop()  # Stop execution here if not authenticated
 
-check_authentication() # Enforce auth before anything else runs
+# check_authentication() # Enforce auth before anything else runs
 # Configure logging
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger(__name__)
