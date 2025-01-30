@@ -3,8 +3,3 @@ yfinance
 pandas
 numpy
 pytz
-datetime
-decimal
-uuid
-sys
-logging
