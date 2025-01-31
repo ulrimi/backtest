@@ -397,6 +397,7 @@ def apply_long_rules(daily_df, params):
         if not pre_cutoff_data.empty:
             daily_high = pre_cutoff_data['high'].max()
             logger.info(f"Pre-cutoff daily high: {daily_high}")
+            pre_cutoff_high = pre_cutoff_data['high'].max()
         else:
             logger.info("No data available for pre-cutoff period.")
             return
@@ -417,8 +418,8 @@ def apply_long_rules(daily_df, params):
                     stop_loss_long = round(daily_high * (1 - params['stop_loss_multiplier']), 2)
                     logger.info(f"Updated stop loss for active trade: {stop_loss_long}")
                 elif not entry_target_set:
-                    entry_target = round(daily_high * (1 + params['entry_multiplier']), 2)
-                    stop_loss_long = round(daily_high * (1 - params['stop_loss_multiplier']), 2)
+                    entry_target = round(pre_cutoff_high * (1 + params['entry_multiplier']), 2)
+                    stop_loss_long = round(pre_cutoff_high * (1 - params['stop_loss_multiplier']), 2)
                     logger.info(f"Entry target set: {entry_target}, Stop loss set: {stop_loss_long}")
                     entry_target_set = True
 
@@ -565,6 +566,7 @@ def apply_short_rules(daily_df, params):
         if not pre_cutoff_data.empty:
             daily_low = pre_cutoff_data['low'].min()
             logger.info(f"Pre-cutoff daily low: {daily_low}")
+            pre_cutoff_low = pre_cutoff_data['low'].min()
         else:
             logger.info("No data available for pre-cutoff period.")
             return
@@ -582,10 +584,12 @@ def apply_short_rules(daily_df, params):
                     stop_loss_short = round(daily_low * (1 + params['stop_loss_multiplier']), 2)
                     logger.info(f"Updated short stop loss: {stop_loss_short}")
                 elif not entry_target_set:
-                    entry_target = round(daily_low * (1 - params['entry_multiplier']), 2)
-                    stop_loss_short = round(daily_low * (1 + params['stop_loss_multiplier']), 2)
+                    logger.info(f'First Break of pre-cutoff low - daily low: {row['low']} vs {pre_cutoff_low}' )
+                    entry_target = round(pre_cutoff_low * (1 - params['entry_multiplier']), 2)
+                    stop_loss_short = round(pre_cutoff_low * (1 + params['stop_loss_multiplier']), 2)
                     logger.info(f"Short entry target: {entry_target}, Stop loss: {stop_loss_short}")
                     entry_target_set = True
+                #daily_low = row['low'] #set new the row low as the new daily low
 
             # Entry check
             if entry_target_set and shares_held == 0 and short_trades_entered_today == 0:
